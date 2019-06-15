@@ -27,7 +27,7 @@ pipeline {
     }
     stage('Classify image tag') {
       steps {
-        sh 'docker tag <source image> <destination image>:cleartest1'
+        sh 'echo "docker tag to classify image"'
       }
     }
     stage('Push to stagging') {
