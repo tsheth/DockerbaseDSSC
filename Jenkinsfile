@@ -30,33 +30,34 @@ pipeline {
         sh 'echo "docker tag to classify image"'
       }
     }
-    stage('Push to stagging') {
+    stage('Push image to staging') {
       steps {
         sh 'echo "ECR registry push for image"'
       }
     }
-    stage('Halt for approval') {
-      parallel {
-        stage('Halt for approval') {
-          steps {
-            input 'Test result'
-          }
-        }
-        stage('Notify approval result') {
-          steps {
-            sh 'echo "send notification over mail"'
-          }
-        }
+    stage('Deploy to Staging') {
+      steps {
+        sh 'echo "ECS deploy commands"'
       }
     }
-    stage('Classify image for prod') {
+    stage('Approved manual test') {
       steps {
-        sh 'echo "production classified image"'
+        input 'Deployment Approval based on manual testing'
+      }
+    }
+    stage('Classify image for production') {
+      steps {
+        sh 'echo "tag image with production ready build"'
+      }
+    }
+    stage('Production deploy approval') {
+      steps {
+        input 'Approved for production deploy'
       }
     }
     stage('Deploy to production') {
       steps {
-        sh 'echo "Deploy image to production ECR"'
+        sh 'echo "ECS commands to deploy service to production"'
       }
     }
   }
