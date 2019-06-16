@@ -36,7 +36,7 @@ sleep 8'''
 sleep 10'''
           }
         }
-        stage('Notify Test result') {
+        stage('Git issues: Test Result') {
           steps {
             sh '''echo "send message to github issue"
 sleep 15'''
