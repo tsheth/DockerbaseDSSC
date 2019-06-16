@@ -6,10 +6,26 @@ pipeline {
         git 'https://github.com/tsheth/DockerbaseDSSC.git'
       }
     }
-    stage('Build image') {
-      steps {
-        sh '''echo "docker build command"
+    stage('Build Docker image') {
+      parallel {
+        stage('Build Web Service') {
+          steps {
+            sh '''echo "docker build command"
 sleep 10'''
+          }
+        }
+        stage('Build Cluster service') {
+          steps {
+            sh '''echo "docker build cluster image"
+sleep 10'''
+          }
+        }
+        stage('Build Location service') {
+          steps {
+            sh '''echo "Build location service in pipeline"
+sleep 8'''
+          }
+        }
       }
     }
     stage('Local Test') {
@@ -23,7 +39,7 @@ sleep 10'''
         stage('Notify Test result') {
           steps {
             sh '''echo "send message to github issue"
-sleep 5'''
+sleep 15'''
           }
         }
       }
@@ -43,7 +59,7 @@ sleep 10'''
     stage('Deploy to Staging') {
       steps {
         sh '''echo "ECS deploy commands"
-slep 10'''
+sleep 10'''
       }
     }
     stage('Manual Test Success?') {
