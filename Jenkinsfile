@@ -2,8 +2,18 @@ pipeline {
   agent any
   stages {
     stage('Git Checkout') {
-      steps {
-        git 'https://github.com/tsheth/DockerbaseDSSC.git'
+      parallel {
+        stage('Git Checkout') {
+          steps {
+            git 'https://github.com/tsheth/DockerbaseDSSC.git'
+          }
+        }
+        stage('Static code analysis') {
+          steps {
+            sh '''echo "static code analysis for github code"
+sleep 12'''
+          }
+        }
       }
     }
     stage('Build Docker image') {
@@ -14,16 +24,15 @@ pipeline {
 sleep 10'''
           }
         }
-        stage('Build Cluster service') {
+        stage('Build Location service') {
           steps {
             sh '''echo "docker build cluster image"
 sleep 10'''
           }
         }
-        stage('Build Location service') {
+        stage('Build Clustering service') {
           steps {
-            sh '''echo "Build location service in pipeline"
-sleep 8'''
+            sh 'echo "Docker build -t <source image> <destination image>'
           }
         }
       }
@@ -36,7 +45,7 @@ sleep 8'''
 sleep 10'''
           }
         }
-        stage('Git issues: Test Result') {
+        stage('DSSC Security Test') {
           steps {
             sh '''echo "send message to github issue"
 sleep 15'''
