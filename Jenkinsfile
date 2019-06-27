@@ -26,7 +26,7 @@ sleep 10'''
         }
         stage('Build Clustering service') {
           steps {
-            sh 'echo "Docker build -t <source image> <destination image>'
+            sh 'echo "Docker build -t <source image> <destination image>"'
           }
         }
       }
