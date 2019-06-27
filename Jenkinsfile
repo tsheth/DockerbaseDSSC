@@ -20,7 +20,8 @@ sleep 12'''
       parallel {
         stage('Build Web Service') {
           steps {
-            sh 'echo "docker build command"'
+            sh '''
+echo "docker build command"'''
           }
         }
         stage('Build Location service') {
