@@ -33,16 +33,26 @@ sleep 10'''
     }
     stage('Local Test') {
       parallel {
-        stage('Local Test') {
+        stage('Performance Test') {
           steps {
             sh '''echo "local testing results"
 sleep 10'''
           }
         }
-        stage('DSSC Security Test') {
+        stage('Smart Check Security Test') {
           steps {
             sh '''echo "send message to github issue"
 sleep 15'''
+          }
+        }
+        stage('Integration Test') {
+          steps {
+            sh 'echo "Integration test"'
+          }
+        }
+        stage('Unit test') {
+          steps {
+            sh 'echo "Unit test"'
           }
         }
       }
