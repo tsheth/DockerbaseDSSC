@@ -21,6 +21,8 @@ sleep 12'''
         stage('Build Location service') {
           steps {
             sh '''echo "docker build cluster image"
+pwd
+ls
 sleep 10'''
           }
         }
@@ -31,8 +33,7 @@ sleep 10'''
         }
         stage('Build AWS Environment') {
           steps {
-            sh '''/usr/local/bin/terraform init
-/usr/local/bin/terraform apply --auto-approve'''
+            sh '/usr/local/bin/terraform apply --auto-approve'
           }
         }
       }
@@ -87,9 +88,18 @@ sleep 10'''
       }
     }
     stage('Classify image for production') {
-      steps {
-        sh '''echo "tag image with production ready build"
+      parallel {
+        stage('Classify image for production') {
+          steps {
+            sh '''echo "tag image with production ready build"
 sleep 10'''
+          }
+        }
+        stage('Destroy AWS Test env ') {
+          steps {
+            sh '/usr/local/bin/terraform destroy -target aws-instance.shellshock_host'
+          }
+        }
       }
     }
     stage('Approve for production deploy') {
