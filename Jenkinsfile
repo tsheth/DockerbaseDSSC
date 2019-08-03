@@ -98,7 +98,7 @@ sleep 10'''
         }
         stage('Destroy AWS Test env ') {
           steps {
-            sh '/usr/local/bin/terraform destroy -target aws-instance.shellshock_host'
+            sh '/usr/local/bin/terraform destroy -target aws-instance.shellshock_host --auto-approve'
           }
         }
       }
