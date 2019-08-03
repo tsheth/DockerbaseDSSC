@@ -20,7 +20,7 @@ sleep 12'''
       parallel {
         stage('Build Location service') {
           steps {
-            sh 'docker build dssc.bryceindustries.net:5000/cluster-service:latest .'
+            sh 'docker build -t dssc.bryceindustries.net:5000/cluster-service:latest .'
           }
         }
         stage('Build AWS Test Environment') {
