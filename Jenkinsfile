@@ -14,12 +14,6 @@ pipeline {
 sleep 12'''
           }
         }
-        stage('Build Test Environment') {
-          steps {
-            sh '''/usr/local/bin/terraform init
-/usr/local/bin/terraform apply --auto-approve'''
-          }
-        }
       }
     }
     stage('Build Docker image') {
@@ -33,6 +27,12 @@ sleep 10'''
         stage('Build Clustering service') {
           steps {
             sh 'echo "Docker build -t <source image> <destination image>"'
+          }
+        }
+        stage('Build AWS Environment') {
+          steps {
+            sh '''/usr/local/bin/terraform init
+/usr/local/bin/terraform apply --auto-approve'''
           }
         }
       }
