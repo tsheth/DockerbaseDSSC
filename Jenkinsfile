@@ -88,7 +88,7 @@ sleep 10'''
       parallel {
         stage('Classify image for production') {
           steps {
-            sh '''echo "tag image with production ready build"
+            sh '''docker tag cluster-service:latest bryce.azurecr.io/bryce/cluster-service:latest
 sleep 10'''
           }
         }
@@ -102,12 +102,6 @@ sleep 10'''
     stage('Approve for production deploy') {
       steps {
         input 'Approved for production deploy'
-      }
-    }
-    stage('Tag Image for Prod') {
-      steps {
-        sh '''docker tag cluster-service:latest bryce.azurecr.io/bryce/cluster-service:latest
-sleep 10'''
       }
     }
     stage('Push Prod Image') {
