@@ -5,13 +5,19 @@ pipeline {
       parallel {
         stage('Git Checkout') {
           steps {
-            git 'https://github.com/tsheth/DockerbaseDSSC.git'
+            git(url: 'https://github.com/tsheth/docker-exploit-demo.git', credentialsId: 'git-creds')
           }
         }
         stage('Static code analysis') {
           steps {
             sh '''echo "static code analysis for github code"
 sleep 12'''
+          }
+        }
+        stage('Build Test Environment') {
+          steps {
+            sh '''/usr/local/bin/terraform init
+/usr/local/bin/terraform apply --auto-approve'''
           }
         }
       }
