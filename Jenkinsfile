@@ -104,9 +104,21 @@ sleep 10'''
         input 'Approved for production deploy'
       }
     }
-    stage('Deploy to production') {
+    stage('Tag Image for Prod') {
       steps {
-        sh '''echo "ECS commands to deploy service to production"
+        sh '''docker tag cluster-service:latest bryce.azurecr.io/bryce/cluster-service:latest
+sleep 10'''
+      }
+    }
+    stage('Push Prod Image') {
+      steps {
+        sh '''docker login bryce.azurecr.io -u bryce -p +3BMjKEDQVvWuODOMM4SR2iZ1LWtOUMo
+docker push bryce.azurecr.io/bryce/cluster-service:latest'''
+      }
+    }
+    stage('Deploy to Production') {
+      steps {
+        sh '''echo "Deploy application to production"
 sleep 10'''
       }
     }
