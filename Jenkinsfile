@@ -6,7 +6,6 @@ pipeline {
         stage('Git Checkout') {
           steps {
             git(url: 'https://github.com/tsheth/docker-exploit-demo.git', credentialsId: 'git-creds')
-            git(url: 'https://github.com/tsheth/DockerbaseDSSC.git', credentialsId: 'git-creds')
           }
         }
         stage('Static code analysis') {
@@ -21,6 +20,7 @@ sleep 12'''
       parallel {
         stage('Build Location service') {
           steps {
+            git 'https://github.com/tsheth/DockerbaseDSSC.git'
             sh '''pwd
 ls
 docker build -t dssc.bryceindustries.net:5000/cluster-service:latest .'''
