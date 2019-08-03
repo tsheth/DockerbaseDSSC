@@ -20,7 +20,8 @@ sleep 12'''
       parallel {
         stage('Build Location service') {
           steps {
-            sh '''git clone https://github.com/tsheth/DockerbaseDSSC.git
+            sh '''rm -rf DockerbaseDSSC
+git clone https://github.com/tsheth/DockerbaseDSSC.git
 cd DockerbaseDSSC
 docker build -t cluster-service:latest .'''
           }
