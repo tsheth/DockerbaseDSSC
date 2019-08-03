@@ -20,18 +20,12 @@ sleep 12'''
       parallel {
         stage('Build Location service') {
           steps {
-            sh '''echo "docker build cluster image"
-pwd
-ls
+            sh '''docker build dssc.bryceindustries.net:5000/cluster-image:latest
+
 sleep 10'''
           }
         }
-        stage('Build Clustering service') {
-          steps {
-            sh 'echo "Docker build -t <source image> <destination image>"'
-          }
-        }
-        stage('Build AWS Environment') {
+        stage('Build AWS Test Environment') {
           steps {
             sh '''/usr/local/bin/terraform init
 /usr/local/bin/terraform apply --auto-approve'''
@@ -49,7 +43,8 @@ sleep 10'''
         }
         stage('Smart Check Security Test') {
           steps {
-            sh '''echo "send message to github issue"
+            sh '''docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name dssc.bryceindustries.net:5000/cluster-image:latest --smartcheck-host="dssc.bryceindustries.net" --smartcheck-user="administrator" --smartcheck-password="Trend@123" --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user admin --preregistry-password Trend@123 --findings-threshold \'{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}\'
+
 sleep 15'''
           }
         }
