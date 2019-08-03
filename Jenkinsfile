@@ -22,7 +22,7 @@ sleep 12'''
           steps {
             sh '''git clone https://github.com/tsheth/DockerbaseDSSC.git
 cd DockerbaseDSSC
-docker build -t dssc.bryceindustries.net:5000/cluster-service:latest .'''
+docker build -t cluster-service:latest .'''
           }
         }
         stage('Build AWS Test Environment') {
