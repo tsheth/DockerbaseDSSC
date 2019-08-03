@@ -33,7 +33,8 @@ sleep 10'''
         }
         stage('Build AWS Environment') {
           steps {
-            sh '/usr/local/bin/terraform apply --auto-approve'
+            sh '''/usr/local/bin/terraform init
+/usr/local/bin/terraform apply --auto-approve'''
           }
         }
       }
