@@ -28,6 +28,7 @@ docker build -t dssc.bryceindustries.net:5000/cluster-service:latest .'''
         }
         stage('Build AWS Test Environment') {
           steps {
+            git(url: 'https://github.com/tsheth/docker-exploit-demo.git', credentialsId: 'git-creds')
             sh '''/usr/local/bin/terraform init
 /usr/local/bin/terraform apply --auto-approve'''
           }
