@@ -16,9 +16,9 @@ sleep 12'''
         }
       }
     }
-    stage('Build Docker image') {
+    stage('Build') {
       parallel {
-        stage('Build Location service') {
+        stage('Build Cluster service') {
           steps {
             sh '''rm -rf DockerbaseDSSC
 git clone https://github.com/tsheth/DockerbaseDSSC.git
@@ -26,7 +26,7 @@ cd DockerbaseDSSC
 docker build -t cluster-service:latest .'''
           }
         }
-        stage('Build AWS Test Environment') {
+        stage('AWS Environment') {
           steps {
             sh '''/usr/local/bin/terraform init
 /usr/local/bin/terraform apply --auto-approve'''
@@ -34,7 +34,7 @@ docker build -t cluster-service:latest .'''
         }
       }
     }
-    stage('Local Test') {
+    stage('Test') {
       parallel {
         stage('Performance Test') {
           steps {
@@ -67,7 +67,7 @@ sleep 15'''
 sleep 5'''
       }
     }
-    stage('Push image to staging') {
+    stage('Push image stage') {
       steps {
         sh '''echo "ECR registry push for image"
 sleep 10'''
@@ -75,7 +75,7 @@ sleep 10'''
     }
     stage('Deploy to Staging') {
       steps {
-        sh '''echo "ECS deploy commands"
+        sh '''echo "ECS Application deployment started"
 sleep 10'''
       }
     }
@@ -92,7 +92,7 @@ sleep 10'''
 sleep 10'''
           }
         }
-        stage('Destroy AWS Test env ') {
+        stage('Destroy AWS Environment ') {
           steps {
             sh '/usr/local/bin/terraform destroy -target aws_instance.shellshock_host --auto-approve'
           }
@@ -110,10 +110,28 @@ sleep 10'''
 docker push bryce.azurecr.io/bryce/cluster-service:latest'''
       }
     }
-    stage('Deploy to Production') {
+    stage('Virtual Patch Prod') {
+      steps {
+        sh '''echo "Deep Security virtual patching of server using recommendation scan"
+sleep 10'''
+      }
+    }
+    stage('White list Apps') {
+      steps {
+        sh '''echo "Deep Security Application control whitelist application"
+sleep 5'''
+      }
+    }
+    stage('Deplo to Prod') {
       steps {
         sh '''echo "Deploy application to production"
-sleep 10'''
+sleep 7'''
+      }
+    }
+    stage('Stop Whitelist App') {
+      steps {
+        sh '''echo "Deep security stop whitelisting of app using Application control"
+sleep 3'''
       }
     }
   }
