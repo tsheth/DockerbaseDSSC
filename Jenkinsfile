@@ -39,24 +39,25 @@ docker build -t cluster-service:latest .'''
         stage('Performance Test') {
           steps {
             sh '''echo "local testing results"
-sleep 10'''
+sleep 20'''
           }
         }
         stage('Smart Check Security Test') {
           steps {
             sh '''docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name cluster-service:latest --smartcheck-host="dssc.bryceindustries.net" --smartcheck-user="administrator" --smartcheck-password="Trend@123" --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user admin --preregistry-password Trend@123 --findings-threshold \'{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}\'
-
-sleep 15'''
+'''
           }
         }
         stage('Integration Test') {
           steps {
-            sh 'echo "Integration test"'
+            sh '''echo "Integration test"
+sleep 17'''
           }
         }
         stage('Unit test') {
           steps {
-            sh 'echo "Unit test"'
+            sh '''echo "Unit test"
+sleep 24'''
           }
         }
       }
