@@ -37,7 +37,7 @@ docker build -t cluster-service:latest .'''
             sh '''rm -rf struts-app
 git clone https://github.com/tsheth/struts-app.git
 cd struts-app
-docker build -t Location-Service:latest .'''
+docker build -t location-service:latest .'''
           }
         }
       }
