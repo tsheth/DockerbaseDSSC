@@ -32,6 +32,14 @@ docker build -t cluster-service:latest .'''
 /usr/local/bin/terraform apply --auto-approve'''
           }
         }
+        stage('Build Java Location Service') {
+          steps {
+            sh '''rm -rf struts-app
+git clone https://github.com/tsheth/struts-app.git
+cd struts-app
+docker build -t Location-Service:latest .'''
+          }
+        }
       }
     }
     stage('Test') {
@@ -46,6 +54,7 @@ sleep 20'''
           steps {
             sh '''docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name cluster-service:latest --smartcheck-host="dssc.bryceindustries.net" --smartcheck-user="administrator" --smartcheck-password="Trend@123" --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user admin --preregistry-password Trend@123 --findings-threshold \'{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}\'
 '''
+            sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name Location-Service:latest --smartcheck-host="dssc.bryceindustries.net" --smartcheck-user="administrator" --smartcheck-password="Trend@123" --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user admin --preregistry-password Trend@123 --findings-threshold \'{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}\''
           }
         }
         stage('Integration Test') {
