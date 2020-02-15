@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 RUN apt-get update
 #RUN apt-get upgrade systemd --no-install-recommends -y
-RUN apt-get upgrade libgcrypt20 --no-install-recommends -y
+#RUN apt-get upgrade libgcrypt20 --no-install-recommends -y
 RUN apt-get upgrade e2fsprogs --no-install-recommends -y
 RUN apt-get upgrade tar --no-install-recommends -y
 RUN apt-get upgrade coreutils --no-install-recommends -y
