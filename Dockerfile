@@ -10,5 +10,7 @@ RUN apt-get upgrade util-linux --no-install-recommends -y
 RUN apt-get upgrade dpkg --no-install-recommends -y
 RUN apt-get upgrade libtasn1-6 --no-install-recommends -y
 RUN apt-get upgrade bash --no-install-recommends -y
+RUN apt-get autoremove
+RUN apt-get clean
 
 
