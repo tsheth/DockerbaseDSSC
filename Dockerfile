@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu as builder
 RUN apt-get update
 #RUN apt-get upgrade systemd --no-install-recommends -y
 #RUN apt-get upgrade libgcrypt20 --no-install-recommends -y
