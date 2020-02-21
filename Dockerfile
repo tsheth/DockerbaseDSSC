@@ -1,5 +1,5 @@
 FROM amazonlinux
-RUN yum update -y
+#RUN yum update -y
 
 
 
