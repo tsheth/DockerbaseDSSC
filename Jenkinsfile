@@ -26,7 +26,7 @@ cd DockerbaseDSSC
 docker build -t cluster-service:latest .'''
           }
         }
-        stage('AWS Environment') {
+        stage('Provision VMware Environment') {
           steps {
             sh '''/usr/local/bin/terraform init
 /usr/local/bin/terraform apply --auto-approve'''
