@@ -114,7 +114,7 @@ sleep 10'''
 sleep 10'''
           }
         }
-        stage('Destroy AWS Environment ') {
+        stage('Destroy VMware Environment ') {
           steps {
             sh '''# /usr/local/bin/terraform destroy -target aws_instance.shellshock_host --auto-approve
 /usr/local/bin/terraform destroy --auto-approve'''
