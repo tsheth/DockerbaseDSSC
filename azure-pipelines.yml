@@ -42,6 +42,6 @@ stages:
        containerRegistry: $(dockerRegistryServiceConnection)
        tags: |
           $(tag)
-    - script: 
-        docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name $(imageRepository):$(tag) --smartcheck-host=$(dsscURL) --smartcheck-user=$(dsscUser) --smartcheck-password=$(dsscPass) --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user admin --preregistry-password Trend@123 --findings-threshold '{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}'
+    - script: | 
+          docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name $(imageRepository):$(tag) --smartcheck-host=$(dsscURL) --smartcheck-user=$(dsscUser) --smartcheck-password=$(dsscPass) --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user admin --preregistry-password Trend@123 --findings-threshold '{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}'
       displayName: "Scanning image for security risks"
