@@ -43,7 +43,7 @@ stages:
        tags: |
           $(tag)
     - script: |
-          echo "{\"insecure-registries\" : [ \"dssc.bryceindustries.net:5000\" ]}\" >> /etc/docker/daemon.json
+          echo "{\"insecure-registries\" : [ \"dssc.bryceindustries.net:5000\" ]}" >> /etc/docker/daemon.json
           sudo systemctl daemon-reload
           sudo systemctl restart docker
     - script: | 
