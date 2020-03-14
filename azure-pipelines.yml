@@ -143,10 +143,9 @@ stages:
   - job: approval
     displayName: Manual testing and approval
     steps:
-    - task: ManualIntervention@8
+    - task: ManualIntervention@7
       inputs:
         instructions: 'Manual test and production approval'
-        emailRecipients: 'tejas_s@trendmicro.com'
 
 - stage: deprovision_arm
   displayName: Cleanup staging infra
