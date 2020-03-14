@@ -15,6 +15,7 @@ variables:
   containerRegistry: 'bryce.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
   # Smartcheck connection build time variables
   dsscURL: 'dssc.bryceindustries.net'
@@ -27,8 +28,10 @@ variables:
 stages:
 - stage: Build
   displayName: Checkout and Build
+  
   jobs:  
   - job: Build
+    
     displayName: Build
     steps:
     - task: Docker@2
@@ -40,23 +43,13 @@ stages:
        containerRegistry: $(dockerRegistryServiceConnection)
        tags: |
           $(tag)
-
-- stage: Scan_image
-  displayName: Scan Security risks
-  dependsOn: Build
-  jobs:  
   - job: Scan_image
-    displayName: Scan Security risks
+    displayName: Scan Security risks from image
     steps:
     - script: | 
           docker images
           docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name bryce.azurecr.io/$(imageRepository):$(tag) --smartcheck-host=$(dsscURL) --smartcheck-user=$(dsscUser) --smartcheck-password=$(dsscPass) --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user admin --preregistry-password Trend@123 --findings-threshold '{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}'
       displayName: "Scanning image for security risks"
-
-- stage: push_image
-  displayName: Push secured image
-  dependsOn: Scan_image
-  jobs:  
   - job: push_image
     displayName: Pushing secure docker image
     steps:
@@ -67,3 +60,56 @@ stages:
         command: 'push'
         tags: |
           $(tag)
+
+
+- stage: provision_arm
+  displayName: Provision staging environment
+  dependsOn: Build
+  jobs:  
+  - job: provision_arm
+    displayName: executing arm template for Azure infrastructure provisioning.
+    steps:
+    - script: | 
+          echo "provisioning azure infrastructure with arm template"
+          sleep 10
+          
+      displayName: "Azure infrastructure is getting ready"
+
+- stage: deploy
+  displayName: Deploy to staging 
+  dependsOn: provision_arm
+  jobs: 
+  - job: integration_test
+    displayName: Application deploy to staging
+    steps:
+    - script: | 
+          echo "Application deployment to staging enironment"
+          sleep 10    
+      displayName: "kubernetes application deployment"   
+
+- stage: IntegrationTest
+  displayName: Integration Test 
+  dependsOn: deploy
+  jobs: 
+  - job: integration_test
+    displayName: Application integration test
+    steps:
+    - script: | 
+          echo "Integration test is in progress"
+          sleep 10    
+      displayName: "Automated Integration Testing" 
+
+- stage: UnitTest
+  displayName: Unit Test 
+  dependsOn: deploy
+  jobs: 
+  - job: unit_test
+    displayName: Automated Unit test
+    steps:
+    - script: | 
+          echo "Unit test is in progress"
+          sleep 10    
+      displayName: "Automated Unit Testing" 
+
+
+  
