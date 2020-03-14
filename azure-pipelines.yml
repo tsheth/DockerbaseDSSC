@@ -59,22 +59,12 @@ stages:
        containerRegistry: $(dockerRegistryServiceConnection)
        tags: |
           $(tag)
-    - script: |
-        docker images
-      displayName: "image list"
-  
-  - job: Scan_image
-    displayName: Scan Security risks from image
-    dependsOn: Build
-    steps:
+
     - script: | 
           docker images
           docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name bryce.azurecr.io/$(imageRepository):$(tag) --smartcheck-host=$(dsscURL) --smartcheck-user=$(dsscUser) --smartcheck-password=$(dsscPass) --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user admin --preregistry-password Trend@123 --findings-threshold '{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}'
       displayName: "Scanning image for security risks"
-  - job: push_image
-    displayName: Pushing secure docker image
-    dependsOn: Scan_image
-    steps:
+      
     - task: Docker@2
       inputs:
         containerRegistry: $(dockerRegistryServiceConnection)
@@ -82,6 +72,7 @@ stages:
         command: 'push'
         tags: |
           $(tag)
+    
 
 
 - stage: provision_arm
