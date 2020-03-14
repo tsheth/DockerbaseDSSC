@@ -43,7 +43,7 @@ stages:
        tags: |
           $(tag)
 
-- stage: Scan Security risks
+- stage: Scan_image
   displayName: Scan Security risks
   jobs:  
   - job: Scan_image
