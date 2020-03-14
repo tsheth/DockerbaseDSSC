@@ -117,7 +117,7 @@ stages:
   dependsOn: deploy
   jobs: 
   - job: unit_test
-    displayName: Automated Unit test
+    displayName: Selenium Unit test
     steps:
     - script: | 
           echo "Unit test is in progress"
@@ -136,5 +136,26 @@ stages:
           sleep 10    
       displayName: "Zaproxy DAST execution" 
 
+- stage: Approval
+  displayName: Manual testing and approval 
+  dependsOn: [DAST, UnitTest, IntegrationTest]
+  jobs: 
+  - job: approval
+    displayName: Manual testing and approval
+    steps:
+    - task: ManualIntervention@8
+      inputs:
+        instructions: 'Manual test and production approval'
+        emailRecipients: 'tejas_s@trendmicro.com'
 
-  
+- stage: deprovision_arm
+  displayName: Cleanup staging infra
+  dependsOn: Approval
+  jobs:  
+  - job: deprovision_arm
+    displayName: Terminate Azure infrastructure.
+    steps:
+    - script: | 
+          echo "deprovisioning azure infrastructure with arm template"
+          sleep 10
+      displayName: "Azure infrastructure is getting destroyed..."
