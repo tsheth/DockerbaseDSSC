@@ -52,7 +52,10 @@ stages:
     - task: Docker@1
       displayName: Push docker image to registry
       inputs:
+        containerRegistry: |
+          $(dockerRegistryServiceConnection)
+        repository: $(imageRepository)
         command: Push an image
-        
-        
+        tags: |
+          $(tag)  
 
