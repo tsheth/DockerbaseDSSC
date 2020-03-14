@@ -59,6 +59,10 @@ stages:
        containerRegistry: $(dockerRegistryServiceConnection)
        tags: |
           $(tag)
+    - script: |
+        docker images
+      displayName: "image list"
+  
   - job: Scan_image
     displayName: Scan Security risks from image
     dependsOn: Build
