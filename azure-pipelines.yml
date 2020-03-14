@@ -51,8 +51,8 @@ stages:
 
     - task: Docker@2
       inputs:
-        containerRegistry: 'bryce.azurecr.io'
-        repository: 'mobileappdssc'
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: $(imageRepository)
         command: 'push'
         tags: |
           $(tag)
