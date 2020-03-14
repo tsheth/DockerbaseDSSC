@@ -138,7 +138,7 @@ stages:
 
 - stage: Approval
   displayName: Manual testing and approval 
-  dependsOn: [DAST, UnitTest, IntegrationTest]
+  dependsOn: DAST
   jobs: 
   - job: approval
     displayName: Manual testing and approval
