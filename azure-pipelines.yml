@@ -32,6 +32,7 @@ stages:
     displayName: Build
     pool:
       vmImage: $(vmImageName)
+          
     steps:
     - task: Docker@2
       displayName: Build docker image
@@ -45,11 +46,10 @@ stages:
 
 - stage: Scan_image
   displayName: Scan Security risks
+  dependsOn: Build
   jobs:  
   - job: Scan_image
     displayName: Scan Security risks
-    pool:
-      vmImage: $(vmImageName)
     steps:
     - script: | 
           docker images
@@ -58,11 +58,10 @@ stages:
 
 - stage: push_image
   displayName: Push secured image
+  dependsOn: Scan_image
   jobs:  
   - job: push_image
     displayName: Pushing secure docker image
-    pool:
-      vmImage: $(vmImageName)
     steps:
     - task: Docker@2
       inputs:
