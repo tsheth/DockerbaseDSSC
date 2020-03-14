@@ -29,10 +29,26 @@ stages:
 - stage: Build
   displayName: Checkout and Build
   
-  jobs:  
+  jobs:
+  - job: SAST
+    displayName: Static code analysis
+    steps:
+    - script: | 
+          echo "SonarQube execution for checkedout code"
+          sleep 10
+      displayName: "SonarQube code sanatization check"
+  
+  - job: SCA
+    displayName: Software composition analysis
+    steps:
+    - script: | 
+          echo "Snyk scan analysis"
+          sleep 10
+      displayName: "Snyk cli execution"
+  
   - job: Build
-    
-    displayName: Build
+    displayName: Docker Build
+    dependsOn: SAST
     steps:
     - task: Docker@2
       displayName: Build docker image
@@ -45,6 +61,7 @@ stages:
           $(tag)
   - job: Scan_image
     displayName: Scan Security risks from image
+    dependsOn: Build
     steps:
     - script: | 
           docker images
@@ -52,6 +69,7 @@ stages:
       displayName: "Scanning image for security risks"
   - job: push_image
     displayName: Pushing secure docker image
+    dependsOn: Scan_image
     steps:
     - task: Docker@2
       inputs:
@@ -110,6 +128,18 @@ stages:
           echo "Unit test is in progress"
           sleep 10    
       displayName: "Automated Unit Testing" 
+
+- stage: DAST
+  displayName: Dynamic Security test 
+  dependsOn: deploy
+  jobs: 
+  - job: DAST
+    displayName: zaproxy application security
+    steps:
+    - script: | 
+          echo "Zaproxy application security testing script"
+          sleep 10    
+      displayName: "Zaproxy DAST execution" 
 
 
   
