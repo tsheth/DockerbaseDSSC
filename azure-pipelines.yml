@@ -47,7 +47,7 @@ stages:
       displayName: "Snyk cli execution"
   
   - job: Build
-    displayName: Docker Build
+    displayName: Build & image Scan
     dependsOn: SAST
     steps:
     - task: Docker@2
@@ -136,20 +136,10 @@ stages:
           sleep 10    
       displayName: "Zaproxy DAST execution" 
 
-- stage: Approval
-  displayName: Manual testing and approval 
-  dependsOn: DAST
-  jobs: 
-  - job: approval
-    displayName: Manual testing and approval
-    steps:
-    - task: ManualIntervention@6
-      inputs:
-        instructions: 'Manual test and production approval'
 
 - stage: deprovision_arm
   displayName: Cleanup staging infra
-  dependsOn: Approval
+  dependsOn: [DAST, UnitTest, IntegrationTest]
   jobs:  
   - job: deprovision_arm
     displayName: Terminate Azure infrastructure.
