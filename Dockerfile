@@ -1,5 +1,5 @@
 FROM alpine as builder
-RUN apk update && apk upgrade
+# RUN apk update && apk upgrade
 
 
 
