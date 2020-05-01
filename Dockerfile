@@ -1,4 +1,4 @@
-FROM amazonlinux
+FROM amazoncorretto
 RUN yum update -y
 
 
