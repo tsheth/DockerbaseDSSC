@@ -131,8 +131,8 @@ sleep 10'''
       parallel {
         stage('Push Prod Image') {
           steps {
-            sh '''docker login bryce.azurecr.io -u bryce -p +3BMjKEDQVvWuODOMM4SR2iZ1LWtOUMo
-docker push bryce.azurecr.io/bryce/cluster-service:latest'''
+            sh '''#docker login bryce.azurecr.io -u bryce -p +3BMjKEDQVvWuODOMM4SR2iZ1LWtOUMo
+#docker push bryce.azurecr.io/bryce/cluster-service:latest'''
           }
         }
         stage('Push image to DR ECR region') {
