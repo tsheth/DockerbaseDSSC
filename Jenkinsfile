@@ -111,7 +111,7 @@ sleep 10'''
         stage('Classify image for production') {
           steps {
             sh '''echo 1
-docker tag cluster-service:latest 983592080135.dkr.ecr.us-east-2.amazonaws.com/test-dssc:latest
+docker tag cluster-service:latest 983592080135.dkr.ecr.us-east-2.amazonaws.com/test-dssc:v1
 #docker tag cluster-service:latest bryce.azurecr.io/bryce/cluster-service:latest
 sleep 10'''
           }
@@ -133,8 +133,18 @@ sleep 10'''
       parallel {
         stage('Push Prod Image') {
           steps {
-            sh '''#docker login bryce.azurecr.io -u bryce -p +3BMjKEDQVvWuODOMM4SR2iZ1LWtOUMo
-#docker push bryce.azurecr.io/bryce/cluster-service:latest'''
+            sh '''# old
+#docker login bryce.azurecr.io -u bryce -p +3BMjKEDQVvWuODOMM4SR2iZ1LWtOUMo
+#docker push bryce.azurecr.io/bryce/cluster-service:latest
+
+# docker login
+aws ecr get-login-password --region us-east-2 | sudo docker login --username AWS --password-stdin 983592080135.dkr.ecr.us-east-2.amazonaws.com
+
+# Pushing docker image
+docker push 983592080135.dkr.ecr.us-east-2.amazonaws.com/test-dssc:v1
+
+
+'''
           }
         }
         stage('Push image to DR ECR region') {
