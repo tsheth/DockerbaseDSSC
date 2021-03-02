@@ -138,7 +138,9 @@ sleep 10'''
 #docker push bryce.azurecr.io/bryce/cluster-service:latest
 
 # docker login
-aws ecr get-login-password --region us-east-2 | sudo docker login --username AWS --password-stdin 983592080135.dkr.ecr.us-east-2.amazonaws.com
+# aws ecr get-login-password --region us-east-2 | sudo docker login --username AWS --password-stdin 983592080135.dkr.ecr.us-east-2.amazonaws.com
+sudo docker login -u AWS -p $(aws ecr get-login-password --region us-east-2) 983592080135.dkr.ecr.us-east-2.amazonaws.com
+
 
 # Pushing docker image
 docker push 983592080135.dkr.ecr.us-east-2.amazonaws.com/test-dssc:v1
