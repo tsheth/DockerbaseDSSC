@@ -110,7 +110,9 @@ sleep 10'''
       parallel {
         stage('Classify image for production') {
           steps {
-            sh '''docker tag cluster-service:latest bryce.azurecr.io/bryce/cluster-service:latest
+            sh '''echo 1
+docker tag cluster-service:latest 983592080135.dkr.ecr.us-east-2.amazonaws.com/test-dssc:latest
+#docker tag cluster-service:latest bryce.azurecr.io/bryce/cluster-service:latest
 sleep 10'''
           }
         }
