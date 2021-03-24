@@ -11,7 +11,7 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'dbb869b7-ec0a-4b1e-b81b-eca7705641f1'
-  imageRepository: 'mobileappdssc'
+  imageRepository: 'monaco-melon'
   containerRegistry: 'acr15831.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
