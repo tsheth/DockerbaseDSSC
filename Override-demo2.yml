@@ -1,0 +1,25 @@
+activationCode: <key>
+auth:
+  password: Trend@123
+  masterPassword: Trend@123
+
+registry:
+  enabled: true
+
+  auth:
+    username: admin
+    password: Trend@123
+    
+certificate:
+  secret:
+    name: dssc-proxy-certificate
+
+cloudOne:
+  apiKey: <key>
+
+replicas:
+  malwareScan: 3
+  scan: 3
+  imageScan: 3
+  vulnerabilityScan: 3
+  contentScan: 3
