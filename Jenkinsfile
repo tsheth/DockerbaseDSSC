@@ -32,8 +32,7 @@ docker build -t cluster-service:latest .'''
 
         stage('Build Cloud Environment') {
           steps {
-            sh '''/usr/local/bin/terraform init
-/usr/local/bin/terraform apply --auto-approve'''
+            sh 'echo "terraform apply --auto-approved"'
           }
         }
 
@@ -61,9 +60,9 @@ sleep 20'''
         stage('Docker image scanning') {
           steps {
             withCredentials(bindings: [
-                                                                                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dssc-login-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'],
-                                                                                    [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dssc-scan-creds', usernameVariable: 'SCAN_USERNAME', passwordVariable: 'SCAN_PASSWORD']
-                                                                                    ]) {
+                                                                                                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dssc-login-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'],
+                                                                                                  [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dssc-scan-creds', usernameVariable: 'SCAN_USERNAME', passwordVariable: 'SCAN_PASSWORD']
+                                                                                                  ]) {
                 sh '''docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name cluster-service:latest --smartcheck-host="ae586be628a2b4046be3989278a9d2b6-1694873914.us-east-2.elb.amazonaws.com" --smartcheck-user=$SCAN_USERNAME --smartcheck-password=$SCAN_PASSWORD --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user $USERNAME --preregistry-password $PASSWORD --findings-threshold \'{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 200 }, "contents": { "defcon1": 100, "critical": 100, "high": 200 }, "checklists": { "defcon1": 100, "critical": 100, "high": 200 }}\'
 docker run -v $WORKSPACE:/root/app shunyeka/dssc-vulnerability-report:latest --smartcheck-host ae586be628a2b4046be3989278a9d2b6-1694873914.us-east-2.elb.amazonaws.com --smartcheck-user $SCAN_USERNAME --smartcheck-password $SCAN_PASSWORD --insecure-skip-tls-verify --min-severity low ae586be628a2b4046be3989278a9d2b6-1694873914.us-east-2.elb.amazonaws.com:5000/cluster-service:latest
 mv $WORKSPACE/DSSCReport.xlsx $WORKSPACE/ClusterService-Vulnerability-report.xlsx
