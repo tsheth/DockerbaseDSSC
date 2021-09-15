@@ -5,17 +5,20 @@ pipeline {
       parallel {
         stage('Git Checkout') {
           steps {
-            git(url: 'https://github.com/tsheth/docker-exploit-demo.git', credentialsId: 'git-creds')
+            git(url: 'https://github.com/tsheth/DockerbaseDSSC.git', credentialsId: 'git-creds', branch: 'master')
           }
         }
+
         stage('Static code analysis') {
           steps {
             sh '''echo "static code analysis for github code"
 sleep 12'''
           }
         }
+
       }
     }
+
     stage('Build') {
       parallel {
         stage('Build Cluster service') {
@@ -26,12 +29,14 @@ cd DockerbaseDSSC
 docker build -t cluster-service:latest .'''
           }
         }
+
         stage('Provision VMware Environment') {
           steps {
             sh '''/usr/local/bin/terraform init
 /usr/local/bin/terraform apply --auto-approve'''
           }
         }
+
         stage('Build Java Location Service') {
           steps {
             sh '''rm -rf struts-app
@@ -40,8 +45,10 @@ cd struts-app
 docker build -t location-service:latest .'''
           }
         }
+
       }
     }
+
     stage('Test') {
       parallel {
         stage('Performance Test') {
@@ -50,12 +57,13 @@ docker build -t location-service:latest .'''
 sleep 20'''
           }
         }
+
         stage('Docker image scanning') {
           steps {
             withCredentials(bindings: [
-                                                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dssc-login-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'],
-                                                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dssc-scan-creds', usernameVariable: 'SCAN_USERNAME', passwordVariable: 'SCAN_PASSWORD']
-                                                        ]) {
+                                                                      [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dssc-login-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'],
+                                                                      [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dssc-scan-creds', usernameVariable: 'SCAN_USERNAME', passwordVariable: 'SCAN_PASSWORD']
+                                                                      ]) {
                 sh '''docker run -v /var/run/docker.sock:/var/run/docker.sock deepsecurity/smartcheck-scan-action --image-name cluster-service:latest --smartcheck-host="ae586be628a2b4046be3989278a9d2b6-1694873914.us-east-2.elb.amazonaws.com" --smartcheck-user=$SCAN_USERNAME --smartcheck-password=$SCAN_PASSWORD --insecure-skip-tls-verify --insecure-skip-registry-tls-verify --preregistry-scan --preregistry-user $USERNAME --preregistry-password $PASSWORD --findings-threshold \'{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 200 }, "contents": { "defcon1": 100, "critical": 100, "high": 200 }, "checklists": { "defcon1": 100, "critical": 100, "high": 200 }}\'
 docker run -v $WORKSPACE:/root/app shunyeka/dssc-vulnerability-report:latest --smartcheck-host ae586be628a2b4046be3989278a9d2b6-1694873914.us-east-2.elb.amazonaws.com --smartcheck-user $SCAN_USERNAME --smartcheck-password $SCAN_PASSWORD --insecure-skip-tls-verify --min-severity low ae586be628a2b4046be3989278a9d2b6-1694873914.us-east-2.elb.amazonaws.com:5000/cluster-service:latest
 mv $WORKSPACE/DSSCReport.xlsx $WORKSPACE/ClusterService-Vulnerability-report.xlsx
@@ -75,20 +83,24 @@ curl -F file=@$WORKSPACE/LocationService-Vulnerability-report.xlsx -F channels=b
 
             }
           }
+
           stage('Integration Test') {
             steps {
               sh '''echo "Integration test"
 sleep 17'''
             }
           }
+
           stage('Unit test') {
             steps {
               sh '''echo "Unit test"
 sleep 24'''
             }
           }
+
         }
       }
+
       stage('Classify image tag') {
         steps {
           sh '''echo "docker tag to classify image"
@@ -96,6 +108,7 @@ sleep 24'''
 docker tag cluster-service:latest 983592080135.dkr.ecr.us-east-2.amazonaws.com/test-dssc:latest'''
         }
       }
+
       stage('Push image stage') {
         steps {
           sh '''# docker login 
@@ -118,17 +131,20 @@ docker push 983592080135.dkr.ecr.us-east-2.amazonaws.com/test-dssc:latest
 '''
         }
       }
+
       stage('Deploy to Staging') {
         steps {
           sh '''echo "ECS Application deployment started"
 sleep 10'''
         }
       }
+
       stage('Manual Test Success?') {
         steps {
           input 'Deployment Approval based on manual testing'
         }
       }
+
       stage('Classify image for production') {
         parallel {
           stage('Classify image for production') {
@@ -139,19 +155,23 @@ docker tag cluster-service:latest 983592080135.dkr.ecr.us-east-2.amazonaws.com/t
 '''
             }
           }
+
           stage('Destroy VMware Environment ') {
             steps {
               sh '''# /usr/local/bin/terraform destroy -target aws_instance.shellshock_host --auto-approve
 /usr/local/bin/terraform destroy --auto-approve'''
             }
           }
+
         }
       }
+
       stage('Approve for production deploy') {
         steps {
           input 'Approved for production deploy'
         }
       }
+
       stage('Push Prod Image') {
         parallel {
           stage('Push Prod Image') {
@@ -172,6 +192,7 @@ docker tag cluster-service:latest 983592080135.dkr.ecr.us-east-2.amazonaws.com/t
 '''
             }
           }
+
           stage('Push image to DR ECR region') {
             steps {
               sh '''echo "Pushing image to AWS DR region"
@@ -179,31 +200,37 @@ docker tag cluster-service:latest 983592080135.dkr.ecr.us-east-2.amazonaws.com/t
 '''
             }
           }
+
         }
       }
+
       stage('Virtual Patch Prod') {
         steps {
           sh '''echo "Deep Security virtual patching of server using recommendation scan"
 sleep 10'''
         }
       }
+
       stage('White list Apps') {
         steps {
           sh '''echo "Deep Security Application control whitelist application"
 sleep 5'''
         }
       }
+
       stage('Deplo to Prod') {
         steps {
           sh '''echo "Deploy application to production"
 sleep 7'''
         }
       }
+
       stage('Stop Whitelist App') {
         steps {
           sh '''echo "Deep security stop whitelisting of app using Application control"
 sleep 3'''
         }
       }
+
     }
   }
