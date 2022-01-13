@@ -1,0 +1,21 @@
+name: GitHub Actions for trend micro cloud one
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Deep Security Smart Check
+        uses: deep-security/smartcheck-scan-action@v1.1.0
+          with:
+          # Mandatory
+            DSSC_IMAGE_NAME: clusterservice:latest
+            DSSC_SMARTCHECK_HOST: ab4f26df5ff234a59a69d708a81c17ca-1630726423.us-east-2.elb.amazonaws.com
+            DSSC_SMARTCHECK_USER: admin
+            DSSC_SMARTCHECK_PASSWORD: 12345
+            DSSC_IMAGE_PULL_AUTH: {"username":"<user>","password":"<password>"}
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
